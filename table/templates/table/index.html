@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Table</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'table/img/favicon-16x16.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mb-5" id="app">
+    <h3 class="text-center my-3">Test</h3>
+    <router-link class="btn btn-outline-secondary" to="/">Test</router-link>
+    <router-link class="btn btn-outline-secondary ms-3" to="/table">Table</router-link>
+    <div class="d-flex justify-content-center">
+        <router-view></router-view>
+    </div>
+
+</div>
+<footer class="fixed-bottom">
+    <p class="text-center">@Berzezek 2021</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js"></script>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script src="../../static/table/js/test.js"></script>
+<script src="../../static/table/js/table.js"></script>
+<script src="../../static/table/js/app.js"></script>
+</body>
+</html>
