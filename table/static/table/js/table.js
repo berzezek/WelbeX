@@ -44,8 +44,8 @@ const table = {
             <select class="form-control mb-2" v-model="searchTerm">
               <option value="">Contains</option>
               <option value="=">Exact match</option>
-              <option value=">=">GTE</option>
-              <option value="<=">LTE</option>
+              <option value=">=" class="text-danger">GTE (developing)</option>
+              <option value="<=" class="text-danger">LTE (developing)</option>
             </select>
             <input v-model="searchQuery" placeholder="Value" class="form-control">
             <div class="d-flex justify-content-center mt-3">

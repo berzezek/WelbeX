@@ -50,7 +50,12 @@ class DynamicSearchFilter(filters.SearchFilter):
 
 
 class TableListView(generics.ListAPIView):
-    queryset = Table.objects.all()
+    # queryset = Table.objects.all()
     serializer_class = TableSerializer
     pagination_class = TablePagination
     filter_backends = [DynamicSearchFilter]
+
+    def get_queryset(self):
+        queryset_list = Table.objects.all()
+
+        return queryset_list
