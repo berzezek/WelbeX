@@ -54,5 +54,3 @@ class TableListView(generics.ListAPIView):
     serializer_class = TableSerializer
     pagination_class = TablePagination
     filter_backends = [DynamicSearchFilter]
-    # search_fields = ['title', '$quantity', '$distance']
-
