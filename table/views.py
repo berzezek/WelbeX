@@ -1,12 +1,13 @@
+from django.db.models import Q
 from django.shortcuts import render
+from rest_framework import generics, filters
+from rest_framework.pagination import PageNumberPagination
+
 # from django.views.decorators.csrf import csrf_exempt
 # from rest_framework.parsers import JSONParser
 # from django.http.response import JsonResponse
-import re
 from .models import Table
 from .serializers import TableSerializer
-from rest_framework import generics, filters
-from rest_framework.pagination import PageNumberPagination
 
 
 def index(request):
@@ -57,5 +58,24 @@ class TableListView(generics.ListAPIView):
 
     def get_queryset(self):
         queryset_list = Table.objects.all()
-
+        qlte = self.request.GET.get("qlte")
+        qgte = self.request.GET.get("qgte")
+        dlte = self.request.GET.get("dlte")
+        dgte = self.request.GET.get("dgte")
+        if qlte:
+            queryset_list = queryset_list.filter(
+                Q(quantity__lte=qlte)
+            ).distinct()
+        elif qgte:
+            queryset_list = queryset_list.filter(
+                Q(quantity__gte=qgte)
+            ).distinct()
+        elif dgte:
+            queryset_list = queryset_list.filter(
+                Q(distance__gte=dgte)
+            ).distinct()
+        elif dlte:
+            queryset_list = queryset_list.filter(
+                Q(distance__lte=dlte)
+            ).distinct()
         return queryset_list

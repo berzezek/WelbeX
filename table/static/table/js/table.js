@@ -33,22 +33,41 @@ const table = {
         </div>
         <hr>
         <div class="d-flex justify-content-center">
-          <form @submit.prevent="searchTable" class="mt-5">
+        <form @submit.prevent="searchTable" class="mt-5">
           <h3 class="text-center mb-2">Search</h3>
             <select class="form-control mb-2" v-model="searchColumn">
-              <option disabled value="">Please select one</option>
+              <option disabled value="">Please select column</option>
               <option value="title">Title</option>
               <option value="quantity">Quantity</option>
               <option value="distance">Distance</option>
             </select>
+
+            <div v-if="searchColumn === 'title'">
             <select class="form-control mb-2" v-model="searchTerm">
               <option value="">Contains</option>
               <option value="=">Exact match</option>
-              <option value=">=" class="text-danger">GTE (developing)</option>
-              <option value="<=" class="text-danger">LTE (developing)</option>
             </select>
-            <input v-model="searchQuery" placeholder="Value" class="form-control">
-            <div class="d-flex justify-content-center mt-3">
+            </div>
+
+            <div v-else-if="searchColumn == 'quantity'">
+              <select class="form-control mb-2" v-model="lteORgteQuantity">
+                  <option value="">Contains</option>
+                  <option value="=">Exact match</option>
+                  <option value="qgte" class="text-danger">GTE (developing)</option>
+                  <option value="qlte" class="text-danger">LTE (developing)</option>
+              </select>
+            </div>
+
+            <div v-else-if="searchColumn == 'distance'">
+              <select class="form-control mb-2" v-model="lteORgteDistance">
+                  <option value="">Contains</option>
+                  <option value="=">Exact match</option>
+                  <option value="dgte" class="text-danger">GTE (developing)</option>
+                  <option value="dlte" class="text-danger">LTE (developing)</option>
+              </select>
+            </div>
+                <input v-model="searchQuery" placeholder="Value" class="form-control">
+            <div class="d-flex justify-content-center my-3">
                 <button class="btn btn-secondary">search</button>
             </div>
           </form>
@@ -63,6 +82,8 @@ const table = {
             searchQuery: "",
             searchColumn: "",
             searchTerm: "",
+            lteORgteQuantity: "",
+            lteORgteDistance: "",
             showNextButton: false,
             showPrevButton: false,
         }
@@ -77,13 +98,32 @@ const table = {
             this.currentPage --
             this.getTable()
         },
-        getTable(){
-            fetch(`/table/?page=${this.currentPage}&search=${this.searchQuery}&search_fields=${this.searchTerm}${this.searchColumn}`)
-            .then((response) => {
+        getTable() {
+            let fetchQuery;
+//            fetchQuery = fetch(`/table/?page=${this.currentPage}&search=${this.searchQuery}&search_fields=${this.searchTerm}${this.lteORgteDistance}${this.lteORgteQuantity}${this.searchColumn}`);
+
+            if (this.lteORgteDistance == 'dgte' || this.lteORgteDistance == 'dlte') {
+//                this.lteORgteQuantity = ""
+                fetchQuery = fetch(`/table/?page=${this.currentPage}&?search=&search_fields=&${this.lteORgteDistance}=${this.searchQuery}`)
+//                this.lteORgteDistance = ""
+            } else if (this.lteORgteQuantity == 'qgte' || this.lteORgteQuantity == 'qlte') {
+//                this.lteORgteDistance = ""
+                fetchQuery = fetch(`/table/?page=${this.currentPage}&?search=&search_fields=&${this.lteORgteQuantity}=${this.searchQuery}`)
+//                this.lteORgteQuantity = ""
+            }
+            else {
+//                this.lteORgteQuantity = ""
+//                this.lteORgteDistance = ""
+                fetchQuery = fetch(`/table/?page=${this.currentPage}&search=${this.searchQuery}&search_fields=${this.searchTerm}${this.lteORgteDistance}${this.lteORgteQuantity}${this.searchColumn}`)
+            }
+            fetchQuery.then((response) => {
                 return response.json()
             })
             .then(data => {
                 console.log(data)
+                console.log(this.lteORgteDistance)
+                console.log(this.lteORgteQuantity)
+                console.log(this.searchTerm)
 
                 this.showPrevButton = false
                 if (data.previous) {
@@ -94,12 +134,14 @@ const table = {
                 if (data.next) {
                     this.showNextButton = true
                 }
-
+                console.log(data.result)
                 this.tables = data.results
             })
         },
         searchTable() {
             this.getTable()
+            this.lteORgteDistance = ""
+            this.lteORgteQuantity = ""
         },
     },
     delimiters: ['[[', ']]'],
