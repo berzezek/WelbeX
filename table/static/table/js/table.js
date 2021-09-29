@@ -53,8 +53,8 @@ const table = {
                   <option disabled>Please select option</option>
                   <option value="">Contains</option>
                   <option value="=">Exact match</option>
-                  <option value="qgte" class="text-danger">GTE (developing)</option>
-                  <option value="qlte" class="text-danger">LTE (developing)</option>
+                  <option value="qgte">GTE</option>
+                  <option value="qlte">LTE</option>
               </select>
             </div>
 
@@ -63,8 +63,8 @@ const table = {
                   <option disabled>Please select option</option>
                   <option value="">Contains</option>
                   <option value="=">Exact match</option>
-                  <option value="dgte" class="text-danger">GTE (developing)</option>
-                  <option value="dlte" class="text-danger">LTE (developing)</option>
+                  <option value="dgte">GTE</option>
+                  <option value="dlte">LTE</option>
               </select>
             </div>
             <div v-if="searchColumn != '' ">
