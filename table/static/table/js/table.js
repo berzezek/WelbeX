@@ -35,22 +35,22 @@ const table = {
         <div class="d-flex justify-content-center">
         <form @submit.prevent="searchTable" class="mt-5">
           <h3 class="text-center mb-2">Search</h3>
-            <select class="form-control mb-2" v-model="searchColumn">
+            <select class="form-control mb-2 w-100" v-model="searchColumn">
               <option disabled value="">Please select column</option>
               <option value="title">Title</option>
               <option value="quantity">Quantity</option>
               <option value="distance">Distance</option>
             </select>
-
-            <div v-if="searchColumn === 'title'">
+            <div v-if="searchColumn == 'title'">
             <select class="form-control mb-2" v-model="searchTerm">
+              <option disabled>Please select option</option>
               <option value="">Contains</option>
               <option value="=">Exact match</option>
             </select>
             </div>
-
             <div v-else-if="searchColumn == 'quantity'">
               <select class="form-control mb-2" v-model="lteORgteQuantity">
+                  <option disabled>Please select option</option>
                   <option value="">Contains</option>
                   <option value="=">Exact match</option>
                   <option value="qgte" class="text-danger">GTE (developing)</option>
@@ -60,13 +60,16 @@ const table = {
 
             <div v-else-if="searchColumn == 'distance'">
               <select class="form-control mb-2" v-model="lteORgteDistance">
+                  <option disabled>Please select option</option>
                   <option value="">Contains</option>
                   <option value="=">Exact match</option>
                   <option value="dgte" class="text-danger">GTE (developing)</option>
                   <option value="dlte" class="text-danger">LTE (developing)</option>
               </select>
             </div>
+            <div v-if="searchColumn != '' ">
                 <input v-model="searchQuery" placeholder="Value" class="form-control">
+            </div>
             <div class="d-flex justify-content-center my-3">
                 <button class="btn btn-secondary">search</button>
             </div>
@@ -90,6 +93,10 @@ const table = {
     },
 
     methods:{
+        loadThis() {
+            this.currentPage
+            this.getTable()
+        },
         loadNext() {
             this.currentPage ++
             this.getTable()
@@ -100,30 +107,20 @@ const table = {
         },
         getTable() {
             let fetchQuery;
-//            fetchQuery = fetch(`/table/?page=${this.currentPage}&search=${this.searchQuery}&search_fields=${this.searchTerm}${this.lteORgteDistance}${this.lteORgteQuantity}${this.searchColumn}`);
-
             if (this.lteORgteDistance == 'dgte' || this.lteORgteDistance == 'dlte') {
-//                this.lteORgteQuantity = ""
-                fetchQuery = fetch(`/table/?page=${this.currentPage}&?search=&search_fields=&${this.lteORgteDistance}=${this.searchQuery}`)
-//                this.lteORgteDistance = ""
+                fetchQuery = fetch(`/table/?page=${this.currentPage}&?search=&search_fields&${this.lteORgteDistance}=${this.searchQuery}`)
             } else if (this.lteORgteQuantity == 'qgte' || this.lteORgteQuantity == 'qlte') {
-//                this.lteORgteDistance = ""
-                fetchQuery = fetch(`/table/?page=${this.currentPage}&?search=&search_fields=&${this.lteORgteQuantity}=${this.searchQuery}`)
-//                this.lteORgteQuantity = ""
-            }
-            else {
-//                this.lteORgteQuantity = ""
-//                this.lteORgteDistance = ""
+                fetchQuery = fetch(`/table/?page=${this.currentPage}&?search=&search_fields&${this.lteORgteQuantity}=${this.searchQuery}`)
+            } else {
                 fetchQuery = fetch(`/table/?page=${this.currentPage}&search=${this.searchQuery}&search_fields=${this.searchTerm}${this.lteORgteDistance}${this.lteORgteQuantity}${this.searchColumn}`)
             }
             fetchQuery.then((response) => {
                 return response.json()
             })
             .then(data => {
-                console.log(data)
                 console.log(this.lteORgteDistance)
                 console.log(this.lteORgteQuantity)
-                console.log(this.searchTerm)
+                console.log(data)
 
                 this.showPrevButton = false
                 if (data.previous) {
@@ -142,10 +139,11 @@ const table = {
             this.getTable()
             this.lteORgteDistance = ""
             this.lteORgteQuantity = ""
+            this.searchTerm = ""
         },
     },
     delimiters: ['[[', ']]'],
     mounted: function(){
         this.getTable();
-    },
+    }
 }

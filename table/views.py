@@ -2,10 +2,6 @@ from django.db.models import Q
 from django.shortcuts import render
 from rest_framework import generics, filters
 from rest_framework.pagination import PageNumberPagination
-
-# from django.views.decorators.csrf import csrf_exempt
-# from rest_framework.parsers import JSONParser
-# from django.http.response import JsonResponse
 from .models import Table
 from .serializers import TableSerializer
 
@@ -42,7 +38,7 @@ def index(request):
 
 
 class TablePagination(PageNumberPagination):
-    page_size = 10
+    page_size = 3
 
 
 class DynamicSearchFilter(filters.SearchFilter):
@@ -51,7 +47,6 @@ class DynamicSearchFilter(filters.SearchFilter):
 
 
 class TableListView(generics.ListAPIView):
-    # queryset = Table.objects.all()
     serializer_class = TableSerializer
     pagination_class = TablePagination
     filter_backends = [DynamicSearchFilter]
