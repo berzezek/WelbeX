@@ -10,33 +10,6 @@ def index(request):
     return render(request, 'table/index.html')
 
 
-# @csrf_exempt
-# def tableApi(request, id=0):
-#     if request.method == 'GET':
-#         table = Table.objects.all()
-#         table_serializer = TableSerializer(table, many=True)
-#         return JsonResponse(table_serializer.data, safe=False)
-#     elif request.method == 'POST':
-#         table_data = JSONParser().parse(request)
-#         table_serializer = TableSerializer(data=table_data)
-#         if table_serializer.is_valid():
-#             table_serializer.save()
-#             return JsonResponse("Запись добавлена", safe=False)
-#         return JsonResponse("Не удалось добавить")
-#     elif request.method == 'PUT':
-#         table_data = JSONParser().parse(request)
-#         table = Table.objects.get(id=table_data['id'])
-#         table_serializer = TableSerializer(table, data=table_data)
-#         if table_serializer.is_valid():
-#             table_serializer.save()
-#             return JsonResponse("Запись изменена", safe=False)
-#         return JsonResponse("Не удалось изменить")
-#     elif request.method == 'DELETE':
-#         table = Table.objects.get(pk=id)
-#         table.delete()
-#         return JsonResponse("Запись удалена", safe=False)
-
-
 class TablePagination(PageNumberPagination):
     page_size = 3
 

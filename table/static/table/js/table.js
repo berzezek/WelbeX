@@ -118,9 +118,6 @@ const table = {
                 return response.json()
             })
             .then(data => {
-                console.log(this.lteORgteDistance)
-                console.log(this.lteORgteQuantity)
-                console.log(data)
 
                 this.showPrevButton = false
                 if (data.previous) {
@@ -131,7 +128,7 @@ const table = {
                 if (data.next) {
                     this.showNextButton = true
                 }
-                console.log(data.result)
+
                 this.tables = data.results
             })
         },
