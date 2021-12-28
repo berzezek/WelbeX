@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Table</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'table/img/favicon-16x16.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+    <header class="d-flex flex-wrap justify-content-between py-3 mb-4 border-bottom bg-light fixed-top mb-5">
+        <div>
+            <span class="fs-4 ms-5">Test from WelbeX</span>
+        </div>
+        <div>
+            <ul class="nav nav-pills me-5">
+                <router-link class="btn btn-outline-secondary" to="/">Conditions</router-link>
+                <router-link class="btn btn-outline-secondary ms-3" to="/table">Solution</router-link>
+                <a class="btn btn-outline-secondary ms-3" href="https://github.com/berzezek/WelbeX">GitHub</a>
+            </ul>
+        </div>
+    </header>
+    <br>
+    <br>
+    <div class="d-flex justify-content-center container mt-5">
+        <router-view></router-view>
+    </div>
+</div>
+<footer class="fixed-bottom bg-light">
+    <p class="text-center">@Berzezek 2021</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js"></script>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script src="{% static 'table/js/test.js' %}"></script>
+<script src="{% static 'table/js/table.js' %}"></script>
+<script src="{% static 'table/js/app.js' %}"></script>
+</body>
+</html>
