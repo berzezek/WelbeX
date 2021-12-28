@@ -1,51 +1,101 @@
-import React, {useState} from "react";
-import {Form, Button} from "react-bootstrap";
-import {capitalize, fields} from "../hooks";
+import React, {useMemo, useState} from 'react';
+import {Form, Button, FormControl, ModalTitle} from 'react-bootstrap';
+import useGetApi from '../hooks';
+import { capitalize, fields } from '../../global';
 
+function createSearchQuery(column, matchVariant, inputText){
+    const createSearchQuery = {column, matchVariant, inputText};
+    return createSearchQuery;
+}
 
 export default function WelbexSearch() {
 
-    const [selectColumn, setSelectColumn] = useState();
-
+    const [selectColumn, setSelectColumn] = useState('');
+    const [selectMatching, setSelectMatching] = useState('');
+    const [selectInput, setSelectInput] = useState('');
+    
     let matching = [];
 
-    if (selectColumn === fields[0] || selectColumn === fields[1]) {
+    if (selectColumn === fields[1]) {
         matching = ['contains', 'equal'];
-    } else if (selectColumn  === fields[2] || selectColumn === fields[3]) {
+    } else {
         matching = ['contains', 'equal', 'gte', 'lte'];
     }
     
-    const [selectMatching, setSelectMatching] = useState();
-    console.log(selectMatching, selectColumn);
+    const searchWelbexQuery = createSearchQuery(selectColumn, selectMatching, selectInput); 
     
+    const title = useGetApi();
+
+    const searchedTable = useMemo(() => {
+        if (selectColumn === 'title') {
+            if (selectMatching === 'contains') {
+                return title.filter(table => table.title.toLocaleLowerCase().includes(selectInput.toLocaleLowerCase()));
+            } else {
+                return title.filter(table => table.title.includes(selectInput));
+            }
+
+        } else {
+            if (selectMatching === 'contains') {
+                return title.filter(table => (
+                    // console.log(table[selectColumn], selectInput)
+                    table[selectColumn].includes(selectInput)
+                ));
+            } else if (selectMatching === 'equal') {
+                return title.filter(table => (table[selectColumn] ? table[selectColumn] === parseFloat(selectInput) : null));
+            } else if (selectMatching === 'gte') {
+                return title.filter(table => (table[selectColumn] ? table[selectColumn] >= parseFloat(selectInput) : null));
+            } else {
+                return title.filter(table => (table[selectColumn] ? table[selectColumn] <= parseFloat(selectInput) : null));
+            }
+        }
+    }, [selectColumn, selectMatching, selectInput])
+
+    console.log(searchedTable);
+
+
     return(
-        <div className='d-flex justify-content-center'>
-            <Form className="d-flex mx-2">
-                <div className="d-flex">
-                    <Form.Select
-                    name="selectColumn"
-                    value="selectColumn" 
-                    onChange={(e) => setSelectColumn(e.target.value)}
+        <div className='d-flex justify-content-end'>
+
+            <Form className='d-flex mx-2'>
+                <div className='d-flex'>
+                    <select
+                    name='selectColumn'
+                    value={selectColumn}
+                    className='form-select' 
+                    onChange={e => setSelectColumn(e.target.value)}
                     >
-                        {/* <option value="">Please select column</option> */}
+                        <option disabled value=''>Please select column</option>
                         {fields.map((field) => (<option key={field} value={field}>{capitalize(field)}</option>))}
-                    </Form.Select>
+                    </select>
                 </div>
-                <div className="d-flex">
+                <div className='d-flex'>
                     {selectColumn !== null ?
-                        <Form.Select 
-                        name="selectMatching"
-                        value="selectMatching"
-                        onChange={(e) => setSelectMatching(e.target.value)}
-                        className="mx-2"
+                        <select 
+                        name='selectMatching'
+                        value={selectMatching}
+                        onChange={e => setSelectMatching(e.target.value)}
+                        className='mx-2 form-select'
                         >
-                            {/* <option value="">Search option</option> */}
+                            <option disabled value=''>Search option</option>
                             {matching.map((m) => (<option key={m} value={m}>{capitalize(m)}</option>))} 
-                        </Form.Select>
+                        </select>
                     : null}
                 </div>
-                <div className="d-flex">
-                    <Button className="ms-2">Search</Button>
+                <div>
+                    <input 
+                    type='text' 
+                    className='form-control' 
+                    placeholder='Search...'
+                    onChange={e => setSelectInput(e.target.value)}
+                     />
+                </div>
+                <div className='d-flex'>
+                    <Button 
+                    className='ms-2'
+                    // onClick={searchQuery}
+                    >
+                        Search
+                    </Button>
                 </div>
             </Form>
         </div>

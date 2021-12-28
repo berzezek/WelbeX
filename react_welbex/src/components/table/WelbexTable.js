@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Table} from 'react-bootstrap';
-import useGetApi, {capitalize, fields} from '../hooks';
+import useGetApi from '../hooks';
+import { capitalize, fields } from '../../global';
 import WelbexSearch from '../search';
 
 
@@ -9,8 +10,7 @@ export default function WelbexTable() {
 
     
     return(
-
-        <div className='container'>
+        <>
             <h1 className='text-center my-5'>Welbex Table</h1>
             <Table striped bordered hover variant="dark" className='text-center'>
                 <thead>
@@ -29,7 +29,6 @@ export default function WelbexTable() {
                     ))}
                 </tbody>
             </Table>
-            <WelbexSearch />
-        </div>
+        </>
     )
 }

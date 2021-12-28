@@ -1,3 +1,2 @@
-import useGetApi, {capitalize, fields} from "./useGetApi";
+import useGetApi from "./useGetApi";
 export default useGetApi;
-export {capitalize, fields}

@@ -2,14 +2,9 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 
 
-export const fields = ['date', 'title', 'quantity', 'distance'];
-
-export function capitalize(s){return s[0].toUpperCase() + s.slice(1);}
-
 export default function useGetApi() {
 
     const [welbexTable, setWelbexTable] = useState([]);
-
 
     
     useEffect(() => {
