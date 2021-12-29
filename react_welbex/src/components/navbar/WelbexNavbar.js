@@ -17,7 +17,7 @@ export default function WelbexNavbar() {
                     <div className="ms-5">
                         <Link to={{ pathname: "/table", fromDashboard: false }} className="btn btn-outline-secondary">Table</Link>
                         <Link to={{ pathname: "/", fromDashboard: false }} className="btn btn-outline-secondary ms-3">Test</Link>
-                        <a href="https://github.com/berzezek/WelbeX" className="btn btn-outline-secondary ms-3">GitHub</a>
+                        <a href="https://github.com/berzezek/WelbeX" target='_blank' className="btn btn-outline-secondary ms-3" rel="noreferrer">GitHub</a>
                     </div>
 
                 </Nav>

@@ -1,7 +1,7 @@
-import React, {useMemo, useState} from 'react';
-import {Form, Button, FormControl, ModalTitle} from 'react-bootstrap';
+import React, {useMemo, useState, useEffect} from 'react';
+import {Form} from 'react-bootstrap';
 import useGetApi from '../hooks';
-import { capitalize, fields } from '../../global';
+import { capitalize, fields } from '../global';
 
 
 export default function WelbexSearch() {
@@ -9,6 +9,7 @@ export default function WelbexSearch() {
     const [selectColumn, setSelectColumn] = useState('');
     const [selectMatching, setSelectMatching] = useState('');
     const [selectInput, setSelectInput] = useState('');
+
     
     let matching = [];
 
@@ -53,15 +54,11 @@ export default function WelbexSearch() {
                 return table.filter(table => (table[selectColumn] ? table[selectColumn] <= parseFloat(selectInput) : null));
             }
         }
-    }, [selectInput])
-
-    console.log(searchedTable);
-
-
+    }, [selectInput, table])
 
     return(
         <div className='d-flex justify-content-end'>
-
+            {searchedTable.map((field) => (<p key={field.id} value={field.title}>{capitalize(field.title)}</p>))}
             <Form className='d-flex mx-2'>
                 <div className='d-flex'>
                     <select
