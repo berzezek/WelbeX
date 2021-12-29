@@ -3,10 +3,6 @@ import {Form, Button, FormControl, ModalTitle} from 'react-bootstrap';
 import useGetApi from '../hooks';
 import { capitalize, fields } from '../../global';
 
-function createSearchQuery(column, matchVariant, inputText){
-    const createSearchQuery = {column, matchVariant, inputText};
-    return createSearchQuery;
-}
 
 export default function WelbexSearch() {
 
@@ -22,35 +18,45 @@ export default function WelbexSearch() {
         matching = ['contains', 'equal', 'gte', 'lte'];
     }
     
-    const searchWelbexQuery = createSearchQuery(selectColumn, selectMatching, selectInput); 
-    
-    const title = useGetApi();
+    const table = useGetApi();
 
     const searchedTable = useMemo(() => {
-        if (selectColumn === 'title') {
-            if (selectMatching === 'contains') {
-                return title.filter(table => table.title.toLocaleLowerCase().includes(selectInput.toLocaleLowerCase()));
+        if (selectColumn === fields[0]) {
+            // search by title
+            if (selectMatching === matching[0]) {
+                return table.filter(table => table[selectColumn].toLowerCase().includes(selectInput.toLowerCase()));
             } else {
-                return title.filter(table => table.title.includes(selectInput));
+                return table.filter(table => table[selectColumn].includes(selectInput));
+            }
+
+        } else if (selectColumn === fields[1]) {
+            // search by date
+            if (selectMatching === matching[0]) {
+                return table.filter(table => table[selectColumn].includes(selectInput));
+            } else if (selectMatching === matching[1]){
+                return table.filter(table => (table[selectColumn] ? table[selectColumn] === selectInput : null));
+            } else if (selectMatching === matching[2]) {
+                return table.filter(table => (table[selectColumn] ? table[selectColumn] >= selectInput : null));
+            } else {
+                return table.filter(table => (table[selectColumn] ? table[selectColumn] <= selectInput : null));
             }
 
         } else {
-            if (selectMatching === 'contains') {
-                return title.filter(table => (
-                    // console.log(table[selectColumn], selectInput)
-                    table[selectColumn].includes(selectInput)
-                ));
-            } else if (selectMatching === 'equal') {
-                return title.filter(table => (table[selectColumn] ? table[selectColumn] === parseFloat(selectInput) : null));
-            } else if (selectMatching === 'gte') {
-                return title.filter(table => (table[selectColumn] ? table[selectColumn] >= parseFloat(selectInput) : null));
+            // search by quantity & distance 
+            if (selectMatching === matching[0]) {
+                return table.filter(table => (table[selectColumn].toString().includes(selectInput)));
+            } else if (selectMatching === matching[1]){
+                return table.filter(table => (table[selectColumn] ? table[selectColumn] === parseFloat(selectInput) : null));
+            } else if (selectMatching === matching[2]) {
+                return table.filter(table => (table[selectColumn] ? table[selectColumn] >= parseFloat(selectInput) : null));
             } else {
-                return title.filter(table => (table[selectColumn] ? table[selectColumn] <= parseFloat(selectInput) : null));
+                return table.filter(table => (table[selectColumn] ? table[selectColumn] <= parseFloat(selectInput) : null));
             }
         }
-    }, [selectColumn, selectMatching, selectInput])
+    }, [selectInput])
 
     console.log(searchedTable);
+
 
 
     return(
@@ -83,19 +89,12 @@ export default function WelbexSearch() {
                 </div>
                 <div>
                     <input 
-                    type='text' 
+                    // type='text'
+                    type={selectColumn === 'date' && selectMatching !== 'contains' ? 'date' : 'text'} 
                     className='form-control' 
                     placeholder='Search...'
                     onChange={e => setSelectInput(e.target.value)}
                      />
-                </div>
-                <div className='d-flex'>
-                    <Button 
-                    className='ms-2'
-                    // onClick={searchQuery}
-                    >
-                        Search
-                    </Button>
                 </div>
             </Form>
         </div>
