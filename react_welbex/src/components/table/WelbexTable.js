@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Table, Form} from 'react-bootstrap';
+import {Table, Form, Button} from 'react-bootstrap';
 import useGetApi from '../hooks';
 import { capitalize, fields } from '../global';
 
@@ -11,59 +11,71 @@ export default function WelbexTable() {
     const [selectMatching, setSelectMatching] = useState('');
     const [selectInput, setSelectInput] = useState('');
 
-    
-    let matching = [];
+    const [pageSize, setPageSize] = useState(5);
+    const [page, setPage] = useState(1);
 
-    if (selectColumn === fields[1]) {
-        matching = ['contains', 'equal'];
-    } else {
-        matching = ['contains', 'equal', 'gte', 'lte'];
+    
+
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let matching = (selectColumn === fields[1] ? ['contains', 'equal'] : ['contains', 'equal', 'gte', 'lte']);
+
+    const allTable = useGetApi(Number.MAX_SAFE_INTEGER, 1)[0];
+    const allTableData = useGetApi(Number.MAX_SAFE_INTEGER, 1)[1];
+    const pagTable = useGetApi(pageSize, page)[0];
+
+    const getPageCount = Math.ceil(allTable.length / pageSize);
+
+    let pageArray = []
+    for (let i = 0; i < getPageCount; i++) {
+        pageArray.push(i + 1);
     }
-
-    const getTable = useGetApi();
     
-    const table = getTable;
+    console.log(pageArray);
 
     const searchedTable = useMemo(() => {
-        if (selectInput === '') {
-            return table;
+        if (selectInput === '' || selectColumn === '' || selectMatching === '') {
+            return pagTable;
         } else {
             if (selectColumn === fields[0]) {
                 // search by title
                 if (selectMatching === matching[0]) {
-                    return table.filter(table => table[selectColumn].toLowerCase().includes(selectInput.toLowerCase()));
+                    return allTable.filter(allTable => allTable[selectColumn].toLowerCase().includes(selectInput.toLowerCase()));
                 } else if (selectMatching === matching[1]) {
-                    return table.filter(table => table[selectColumn].includes(selectInput));
+                    return allTable.filter(allTable => allTable[selectColumn].includes(selectInput));
                 }
     
             } else if (selectColumn === fields[1]) {
                 // search by date
                 if (selectMatching === matching[0]) {
-                    return table.filter(table => table[selectColumn].includes(selectInput));
+                    return allTable.filter(allTable => allTable[selectColumn].includes(selectInput));
                 } else if (selectMatching === matching[1]){
-                    return table.filter(table => (table[selectColumn] ? table[selectColumn] === selectInput : null));
+                    return allTable.filter(allTable => (allTable[selectColumn] ? allTable[selectColumn] === selectInput : null));
                 } else if (selectMatching === matching[2]) {
-                    return table.filter(table => (table[selectColumn] ? table[selectColumn] >= selectInput : null));
+                    return allTable.filter(allTable => (allTable[selectColumn] ? allTable[selectColumn] >= selectInput : null));
                 } else {
-                    return table.filter(table => (table[selectColumn] ? table[selectColumn] <= selectInput : null));
+                    return allTable.filter(allTable => (allTable[selectColumn] ? allTable[selectColumn] <= selectInput : null));
                 }
     
-            } else  {
+            } else {
                 // search by quantity & distance 
                 if (selectMatching === matching[0]) {
-                    return table.filter(table => (table[selectColumn].toString().includes(selectInput)));
+                    return allTable.filter(allTable => (allTable[selectColumn].toString().includes(selectInput)));
                 } else if (selectMatching === matching[1]){
-                    return table.filter(table => (table[selectColumn] ? table[selectColumn] === parseFloat(selectInput) : null));
+                    return allTable.filter(allTable => (allTable[selectColumn] ? allTable[selectColumn] === parseFloat(selectInput) : null));
                 } else if (selectMatching === matching[2]) {
-                    return table.filter(table => (table[selectColumn] ? table[selectColumn] >= parseFloat(selectInput) : null));
+                    return allTable.filter(allTable => (allTable[selectColumn] ? allTable[selectColumn] >= parseFloat(selectInput) : null));
                 } else {
-                    return table.filter(table => (table[selectColumn] ? table[selectColumn] <= parseFloat(selectInput) : null));
+                    return allTable.filter(allTable => (allTable[selectColumn] ? allTable[selectColumn] <= parseFloat(selectInput) : null));
                 }
             }
         }
 
-    }, [selectInput, table, selectColumn, selectMatching, matching])
+    }, [selectInput, selectColumn, selectMatching, pagTable, matching, allTable]);
 
+
+
+    const table = (selectInput === '' ? pagTable : searchedTable);
 
     return(
         <div className=''>
@@ -102,10 +114,10 @@ export default function WelbexTable() {
             </div>
         </Form>
 
-        {searchedTable.length ?
+        {searchedTable.length || selectMatching !== '' ?
         <>
             <h1 className='text-center my-5'>Welbex Table</h1>
-            <p className='text-end me-5 text-muted'>Найдено: {searchedTable.length}</p>
+            <p className='text-end me-2 text-muted'>Записей в таблице: {allTableData.count}, показано: {searchedTable.length}.</p>
             <Table striped bordered hover variant="dark" className='text-center'>
                 <thead>
                     <tr>
@@ -113,7 +125,7 @@ export default function WelbexTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {searchedTable.map((welbex) => (
+                    {table.map((welbex) => (
                     <tr key={welbex.id}>
                     <td>{welbex.date}</td>
                     <td>{welbex.title}</td>
@@ -122,12 +134,31 @@ export default function WelbexTable() {
                     </tr>
                     ))}
                 </tbody>
-            </Table>    
+            </Table> 
+            <div className='d-flex justify-content-center'>
+                {pageArray.map(p =>  
+                    <span 
+                    onClick={() => setPage(p)}
+                    key={p} 
+                    className={page === p 
+                        ? 'btn btn-primary me-1' 
+                        : 'btn btn-secondary me-1' }>
+                            {p}
+                    </span>    
+                )}
+                <input 
+                type='number' 
+                className='form-control w-25' 
+                placeholder='Total rows on page'
+                onChange={e => (e.target.value || e.target.value >= 1 ? setPageSize(e.target.value) : 1)}
+                 />
+            </div> 
         </>
         :
         <>
             <h1 className='text-center my-5'>Посты не найдены</h1>
-        </> }
+        </>}
+
         </div>
     )
 }

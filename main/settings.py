@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-2*z=-p3+6uirh^s$tdh=r-dcm0($pjd%1e2&#pc(-7w7enc58d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['welbextest.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -51,15 +51,15 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     'http://127.0.0.1:3000',
 ]
-#
-# CORS_ALLOW_METHODS = [
-#     "DELETE",
-#     "GET",
-#     "OPTIONS",
-#     "PATCH",
-#     "POST",
-#     "PUT",
-# ]
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
 
 TEMPLATES = [
     {
@@ -136,6 +136,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     (BASE_DIR / 'react_welbex/build/static'),
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
