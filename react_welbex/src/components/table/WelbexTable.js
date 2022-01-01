@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Table, Form, Button} from 'react-bootstrap';
+import {Table, Form} from 'react-bootstrap';
 import useGetApi from '../hooks';
 import { capitalize, fields } from '../global';
 
@@ -14,11 +14,13 @@ export default function WelbexTable() {
     const [pageSize, setPageSize] = useState(5);
     const [page, setPage] = useState(1);
 
-    
-
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    let matching = (selectColumn === fields[1] ? ['contains', 'equal'] : ['contains', 'equal', 'gte', 'lte']);
+    const matching = useMemo(() => {
+        if (selectColumn === fields[1]) {
+            return ['contains', 'equal'];
+        } else {
+            return['contains', 'equal', 'gte', 'lte'];
+        }
+    }, [selectColumn]);
 
     const allTable = useGetApi(Number.MAX_SAFE_INTEGER, 1)[0];
     const allTableData = useGetApi(Number.MAX_SAFE_INTEGER, 1)[1];
@@ -26,13 +28,13 @@ export default function WelbexTable() {
 
     const getPageCount = Math.ceil(allTable.length / pageSize);
 
+    const pageSizeCount = [5, 10, 50, 100];    
+    
     let pageArray = []
     for (let i = 0; i < getPageCount; i++) {
         pageArray.push(i + 1);
     }
     
-    console.log(pageArray);
-
     const searchedTable = useMemo(() => {
         if (selectInput === '' || selectColumn === '' || selectMatching === '') {
             return pagTable;
@@ -146,12 +148,15 @@ export default function WelbexTable() {
                             {p}
                     </span>    
                 )}
-                <input 
-                type='number' 
-                className='form-control w-25' 
-                placeholder='Total rows on page'
-                onChange={e => (e.target.value || e.target.value >= 1 ? setPageSize(e.target.value) : 1)}
-                 />
+                <select 
+                name='pageSize'
+                value={pageSize}
+                onChange={e => setPageSize(e.target.value)}
+                className='form-select w-25'
+                >
+                    <option disabled value=''>Search option</option>
+                    {pageSizeCount.map((p) => (<option key={p} value={p}>{p}</option>))} 
+                </select>
             </div> 
         </>
         :

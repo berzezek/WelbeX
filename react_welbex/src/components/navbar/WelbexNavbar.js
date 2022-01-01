@@ -15,9 +15,9 @@ export default function WelbexNavbar() {
                 <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
                     <div className="ms-5">
-                        <Link to={{ pathname: "/table", fromDashboard: false }} className="btn btn-outline-secondary">Table</Link>
-                        <Link to={{ pathname: "/", fromDashboard: false }} className="btn btn-outline-secondary ms-3">Test</Link>
-                        <a href="https://github.com/berzezek/WelbeX" target='_blank' className="btn btn-outline-secondary ms-3" rel="noreferrer">GitHub</a>
+                        <Link to={{ pathname: "/", fromDashboard: false }} className="btn btn-outline-secondary">Test</Link>
+                        <Link to={{ pathname: "/table", fromDashboard: false }} className="btn btn-primary mx-2">Solution</Link>
+                        <a href="https://github.com/berzezek/WelbeX" target='_blank' className="btn btn-outline-secondary" rel="noreferrer">GitHub</a>
                     </div>
 
                 </Nav>
