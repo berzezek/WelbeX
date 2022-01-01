@@ -47,8 +47,7 @@ ROOT_URLCONF = 'main.urls'
 
 # Только для разработки, для производства добавьте соответсвующие домены
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost:8000',
+    '*',
 ]
 
 CORS_ALLOW_METHODS = [
