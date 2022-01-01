@@ -137,7 +137,7 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = ((BASE_DIR / 'react_welbex/build/static'), )
+STATICFILES_DIRS = ((BASE_DIR / 'staticfiles'), )
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
