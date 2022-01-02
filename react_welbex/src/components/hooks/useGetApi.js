@@ -12,7 +12,7 @@ export default function useGetApi(page_size=5, page=1) {
     useEffect( () => {
         axios({
             method: "GET",
-            url: `http://127.0.0.1:8000/api/v1/table?page_size=${page_size}&page=${page}`,
+            url: `https://welbextest.herokuapp.com/api/v1/table?page_size=${page_size}&page=${page}`,
         }).then(response => {
             setWelbexTableResult(response.data.results);
             setWelbexTableData(response.data);
